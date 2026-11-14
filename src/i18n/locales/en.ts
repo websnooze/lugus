@@ -1,0 +1,102 @@
+const en = {
+  app: {
+    title: 'Video Converter',
+    ffmpegReady: 'Local · FFmpeg ready',
+  },
+  nav: {
+    menu: 'Menu',
+    settings: 'Settings',
+    settingsDesc: 'Language and appearance',
+    home: 'Converter',
+  },
+  dropzone: {
+    analyzing: 'Analyzing video…',
+    change: 'Change',
+    remove: 'Remove video',
+    title: 'Drop your video here',
+    subtitle: 'MP4, MOV, MKV, WebM… 100% local conversion',
+    choose: 'Choose a file',
+  },
+  options: {
+    title: 'Output',
+    subtitle: 'Choose format and quality',
+    format: 'Format',
+    quality: 'Quality',
+    qualityHint: 'VideoToolbox + prio_speed on Apple Silicon',
+    outputFile: 'Output file',
+    noOutput: 'No file selected',
+    chooseOutput: 'Choose destination',
+  },
+  formats: {
+    mp4: 'Universal H.264',
+    hevc: 'Smaller H.265',
+    mov: 'QuickTime',
+    webm: 'VP9 · web',
+    mkv: 'Flexible container',
+    gif: 'Short animation',
+    mp3: 'Audio only',
+  },
+  qualities: {
+    high: 'High',
+    highHint: 'Best quality',
+    balanced: 'Balanced',
+    balancedHint: 'Recommended',
+    small: 'Light',
+    smallHint: 'Smaller file',
+  },
+  actions: {
+    convert: 'Convert',
+    cancel: 'Cancel',
+    converting: 'Converting',
+    preparing: 'Preparing…',
+    speed: 'Speed {{speed}}',
+    done: 'Conversion complete',
+    reveal: 'Show in Finder',
+    newConversion: 'New conversion',
+    ffmpegRequired: 'FFmpeg required',
+    conversionFailed: 'Conversion failed',
+  },
+  toasts: {
+    doneTitle: 'Conversion complete',
+    doneDesc: 'Your file is ready on this Mac',
+    cancelled: 'Conversion cancelled',
+    failedTitle: 'Conversion failed',
+    presetSaved: 'Preset saved',
+    presetDeleted: 'Preset deleted',
+    presetRenamed: 'Preset renamed',
+    presetApplied: 'Preset applied',
+  },
+  settings: {
+    title: 'Settings',
+    back: 'Back',
+    appearance: 'Appearance',
+    appearanceDesc: 'Theme follows your preference',
+    theme: 'Theme',
+    themeLight: 'Light',
+    themeDark: 'Dark',
+    themeSystem: 'System',
+    language: 'Language',
+    languageDesc: 'Interface language',
+  },
+  presets: {
+    title: 'Presets',
+    subtitle: 'Reuse your favorite settings',
+    empty: 'No presets yet',
+    namePlaceholder: 'Preset name',
+    save: 'Save preset',
+    saveCurrent: 'Save current settings',
+    apply: 'Apply',
+    rename: 'Rename',
+    delete: 'Delete',
+    renameTitle: 'Rename preset',
+    confirm: 'Save',
+    cancel: 'Cancel',
+  },
+}
+
+type DeepStringify<T> = {
+  [K in keyof T]: T[K] extends string ? string : DeepStringify<T[K]>
+}
+
+export default en
+export type TranslationSchema = DeepStringify<typeof en>
