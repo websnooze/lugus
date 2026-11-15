@@ -29,6 +29,15 @@ bun run tauri:build
 - Formats : MP4, HEVC, MOV, WebM, MKV, GIF, MP3
 - Accélération **VideoToolbox** pour H.264 / HEVC
 - Progression en temps réel, annulation, ouverture dans le Finder
+- **Enregistreur d’écran** : plein écran, fenêtre ou zone dessinée
+- Compte à rebours optionnel, curseur, jusqu’à **120 fps** (ProMotion)
+- Conversion automatique après l’enregistrement
+- 8 langues + thème clair / sombre / système + presets
+
+### Permission macOS
+
+Pour l’enregistreur, autorise **Enregistrement d’écran** pour Video Converter dans  
+Réglages Système → Confidentialité et sécurité → Enregistrement d’écran.
 
 ## Stack
 
