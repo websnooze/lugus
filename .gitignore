@@ -24,6 +24,7 @@ dist-ssr
 *.sw?
 
 # Tauri / Rust
+/target
 src-tauri/target
 src-tauri/gen/schemas
 *.app
