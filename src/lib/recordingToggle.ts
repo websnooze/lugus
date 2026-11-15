@@ -34,7 +34,12 @@ export async function showMainWindow() {
     const window = getCurrentWindow()
     await window.show()
     await window.unminimize()
-    await window.setFocus()
+    // En mode recorder (NSPanel), éviter setFocus pour ne pas activer l’app
+    // au-dessus des Spaces / fullscreen. Hors recorder, le focus reste OK.
+    const view = usePreferencesStore.getState().view
+    if (view !== 'recorder') {
+      await window.setFocus()
+    }
   } catch {
     // ignore
   }

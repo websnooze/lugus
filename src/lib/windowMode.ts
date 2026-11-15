@@ -18,22 +18,13 @@ export function getWindowChrome() {
   return currentChrome
 }
 
-async function setNativeOverlayMode(enabled: boolean) {
+/** NSPanel fullscreen-aware (Spaces + apps plein écran). */
+async function setRecorderPanelMode(enabled: boolean) {
   try {
-    await invoke('set_macos_overlay_mode', {
-      label: getCurrentWindow().label,
-      enabled,
-    })
+    await invoke('set_recorder_panel_mode', { enabled })
   } catch (error) {
-    console.error('Failed to set macOS overlay mode', error)
+    console.error('Failed to set recorder panel mode', error)
   }
-}
-
-/** Re-applique les flags Spaces après que AppKit ait fini de poser la fenêtre. */
-async function setNativeOverlayModeSettled(enabled: boolean) {
-  await setNativeOverlayMode(enabled)
-  await new Promise((resolve) => setTimeout(resolve, 80))
-  await setNativeOverlayMode(enabled)
 }
 
 /** Couvre l’écran courant sans entrer en mode fullscreen macOS (pas de Space dédié). */
@@ -68,9 +59,9 @@ export async function applyWindowChrome(mode: WindowChrome, force = false) {
       document.documentElement.classList.remove('recorder-overlay', 'recorder-hud')
       await win.setFullscreen(false)
       await win.setVisibleOnAllWorkspaces(false)
-      await setNativeOverlayMode(false)
+      // Quitte le NSPanel avant de reposer la fenêtre convertisseur.
+      await setRecorderPanelMode(false)
       await win.setAlwaysOnTop(false)
-      // Chrome custom (TitleBar + feux) — pas de décorations natives.
       await win.setDecorations(false)
       await win.setMinSize(new LogicalSize(APP_MIN.width, APP_MIN.height))
       await win.setSize(new LogicalSize(APP_SIZE.width, APP_SIZE.height))
@@ -89,14 +80,14 @@ export async function applyWindowChrome(mode: WindowChrome, force = false) {
       await win.setMinSize(new LogicalSize(320, 200))
       await coverCurrentDisplay()
       await win.show()
-      await win.setFocus()
-      // Appliquer les flags Spaces en dernier (après show), sinon macOS les ignore.
-      await setNativeOverlayModeSettled(true)
+      // Pas de setFocus : un panel non-activant ne doit pas voler le focus.
+      // Une seule applique NSPanel (éviter le double orderFront = flash Spaces).
+      await setRecorderPanelMode(true)
       currentChrome = mode
       return
     }
 
-    // hud — petite barre, toujours au-dessus / tous les Spaces
+    // hud — petite barre, même stack NSPanel
     document.documentElement.classList.remove('recorder-overlay')
     document.documentElement.classList.add('recorder-hud')
     await win.setFullscreen(false)
@@ -120,8 +111,7 @@ export async function applyWindowChrome(mode: WindowChrome, force = false) {
     }
 
     await win.show()
-    await win.setFocus()
-    await setNativeOverlayModeSettled(true)
+    await setRecorderPanelMode(true)
     currentChrome = mode
   } catch (error) {
     console.error('Failed to apply window chrome', error)

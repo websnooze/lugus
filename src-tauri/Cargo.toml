@@ -1,7 +1,7 @@
 [package]
 name = "video-converter"
 version = "0.1.0"
-description = "Convertisseur vidéo local pour macOS"
+description = "Lugus — convertisseur média local pour macOS"
 authors = ["websnooze"]
 edition = "2021"
 rust-version = "1.77"
@@ -32,3 +32,4 @@ core-foundation = "0.10"
 core-graphics = "0.24"
 objc2 = "0.6.5"
 objc2-app-kit = "0.3.2"
+tauri-nspanel = "2.1"
