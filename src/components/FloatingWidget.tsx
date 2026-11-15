@@ -17,7 +17,8 @@ export function FloatingWidget({
   return (
     <div
       className={[
-        'app-no-drag rounded-[22px] border border-white/12 bg-[rgba(18,22,28,0.72)] shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-2xl',
+        // Pas de grosse ombre / blur lourd : ça créait des auréoles noires avec le voile de zone.
+        'app-no-drag rounded-[22px] border border-white/12 bg-[rgba(18,22,28,0.92)]',
         className,
       ].join(' ')}
       {...rest}

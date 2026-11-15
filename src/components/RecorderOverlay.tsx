@@ -35,6 +35,7 @@ import {
 	type QualityPreset,
 } from "../types";
 import { AnimatedNumber, AnimatedTime } from "./AnimatedNumber";
+import { DimHole } from "./DimHole";
 import { FloatingWidget } from "./FloatingWidget";
 import { RegionDrawLayer } from "./RegionDrawLayer";
 
@@ -93,6 +94,30 @@ export function RecorderOverlay() {
 	useEffect(() => {
 		void refreshSources();
 	}, [refreshSources]);
+
+	// Bloque scroll / rubber-band / gestures trackpad sur l’overlay.
+	useEffect(() => {
+		const block = (event: Event) => {
+			event.preventDefault();
+		};
+		const opts: AddEventListenerOptions = { passive: false, capture: true };
+		document.addEventListener("wheel", block, opts);
+		document.addEventListener("gesturestart", block, opts);
+		document.addEventListener("gesturechange", block, opts);
+		document.addEventListener("gestureend", block, opts);
+		document.addEventListener(
+			"touchmove",
+			block,
+			opts,
+		);
+		return () => {
+			document.removeEventListener("wheel", block, opts);
+			document.removeEventListener("gesturestart", block, opts);
+			document.removeEventListener("gesturechange", block, opts);
+			document.removeEventListener("gestureend", block, opts);
+			document.removeEventListener("touchmove", block, opts);
+		};
+	}, []);
 
 	useEffect(() => {
 		document.documentElement.classList.toggle("recorder-picking", pickingRegion);
@@ -164,7 +189,7 @@ export function RecorderOverlay() {
 
 	return (
 		<div className="recorder-stage relative h-dvh w-full overflow-hidden">
-			{/* Cadre focus : idle + countdown uniquement (masqué dès le record — fenêtre hide). */}
+			{/* Cadre focus : idle + countdown (DimHole, sans box-shadow géant). */}
 			{status !== "recording" &&
 			status !== "processing" &&
 			((status === "countdown" && focusRect) ||
@@ -174,19 +199,10 @@ export function RecorderOverlay() {
 							status === "countdown" && focusRect ? focusRect : regionCss!;
 						const live = status === "countdown";
 						return (
-							<div
-								className={[
-									"pointer-events-none absolute z-10 border-2 border-accent",
-									live
-										? "shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]"
-										: "shadow-[0_0_0_9999px_rgba(0,0,0,0.22)]",
-								].join(" ")}
-								style={{
-									left: rect.x,
-									top: rect.y,
-									width: rect.width,
-									height: rect.height,
-								}}
+							<DimHole
+								className="z-10"
+								dimOpacity={live ? 0.5 : 0.28}
+								rect={rect}
 							/>
 						);
 					})()
@@ -210,7 +226,7 @@ export function RecorderOverlay() {
 			{/* Barre stop minimale pendant l’enregistrement (hors zone focus si possible) */}
 			{status === "recording" ? (
 				<div className="absolute bottom-14 left-1/2 z-40 w-[min(420px,calc(100%-2rem))] -translate-x-1/2">
-					<div className="app-no-drag flex items-center justify-between gap-3 rounded-[18px] border border-white/14 bg-[rgba(16,18,22,0.9)] px-4 py-3 shadow-[0_16px_50px_rgba(0,0,0,0.45)] backdrop-blur-xl">
+					<div className="app-no-drag flex items-center justify-between gap-3 rounded-[18px] border border-white/14 bg-[rgba(16,18,22,0.92)] px-4 py-3">
 						<div className="flex items-center gap-3">
 							<span className="size-2.5 rounded-full bg-danger" />
 							<div>
@@ -251,8 +267,8 @@ export function RecorderOverlay() {
 				) : null
 			) : (
 				<>
-					{/* Top bar */}
-					<div className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-6 pt-5">
+					{/* Top bar — un peu sous le bord (menu / notch / barre système) */}
+					<div className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-6 pt-11">
 						<FloatingWidget
 							className="flex items-center gap-2 px-2 py-2"
 							delay={0.02}
@@ -303,7 +319,7 @@ export function RecorderOverlay() {
 
 					{/* Source widget — left */}
 					<FloatingWidget
-						className="absolute left-6 top-24 z-20 w-70 space-y-4 p-4"
+						className="absolute left-6 top-32 z-20 w-70 space-y-4 p-4"
 						delay={0.08}
 					>
 						<div>
@@ -431,7 +447,7 @@ export function RecorderOverlay() {
 
 					{/* Capture settings — right */}
 					<FloatingWidget
-						className="absolute right-6 top-24 z-20 w-65 space-y-4 p-4"
+						className="absolute right-6 top-32 z-20 w-65 space-y-4 p-4"
 						delay={0.12}
 					>
 						<Typography

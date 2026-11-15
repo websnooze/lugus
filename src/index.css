@@ -18,14 +18,10 @@ body {
   font-family: var(--font-sans);
 }
 
+html,
 html.dark,
 html[data-theme="dark"] {
   color-scheme: dark;
-}
-
-html.light,
-html[data-theme="light"] {
-  color-scheme: light;
 }
 
 /* Fond + coins arrondis sur #root : la fenêtre Tauri est transparente. */
@@ -33,11 +29,6 @@ html[data-theme="light"] {
   overflow: hidden;
   border-radius: 12px;
   background: #0b0d0f;
-}
-
-html.light #root,
-html[data-theme="light"] #root {
-  background: #f2f3f5;
 }
 
 .app-shell {
@@ -50,11 +41,6 @@ html[data-theme="light"] #root {
 
 .app-titlebar {
   background: #0b0d0f;
-}
-
-html.light .app-titlebar,
-html[data-theme="light"] .app-titlebar {
-  background: #f2f3f5;
 }
 
 .app-drag {
@@ -75,16 +61,53 @@ html.recorder-hud,
 html.recorder-hud body,
 html.recorder-hud #root {
   background: transparent !important;
+  border-radius: 0 !important;
+  /* Empêche le rubber-band WKWebView (overlay qui « part » au contact trackpad). */
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  touch-action: none !important;
 }
 
 html.recorder-overlay .recorder-stage {
   background: rgba(6, 8, 10, 0.28);
+  overscroll-behavior: none;
+  touch-action: none;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 html.recorder-overlay.recorder-picking .recorder-stage,
 html.recorder-overlay.recorder-has-region .recorder-stage,
 html.recorder-overlay.recorder-recording .recorder-stage {
   background: transparent;
+}
+
+/* Boutons / champs dans l’overlay : contraste sur panneaux sombres. */
+html.recorder-overlay .button--ghost,
+html.recorder-overlay .button--outline,
+html.recorder-overlay .button--secondary {
+  --button-fg: rgba(255, 255, 255, 0.92);
+  --button-bg-hover: rgba(255, 255, 255, 0.1);
+  --button-bg-pressed: rgba(255, 255, 255, 0.14);
+  color: var(--button-fg);
+}
+
+html.recorder-overlay .button--primary,
+html.recorder-overlay .button--danger {
+  --button-fg: #fff;
+}
+
+html.recorder-overlay .select__trigger,
+html.recorder-overlay [data-slot="select-default-indicator"],
+html.recorder-overlay [data-slot="select-indicator"] {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+html.recorder-overlay svg {
+  color: inherit;
 }
 
 html.recorder-hud body {

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { CaptureRegion } from '../lib/api'
+import { DimHole } from './DimHole'
 
 interface DraftRect {
   x: number
@@ -85,30 +86,22 @@ export function RegionDrawLayer({ onConfirm, onCancel }: RegionDrawLayerProps) {
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-50 cursor-crosshair select-none bg-black/30"
+      className="fixed inset-0 z-50 cursor-crosshair select-none"
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
     >
-      <div className="pointer-events-none absolute left-1/2 top-8 z-20 -translate-x-1/2 rounded-2xl bg-black/70 px-4 py-2 text-center text-white backdrop-blur">
+      {/* Voile plein écran tant qu’aucune zone n’est tirée */}
+      {!rect ? <div className="absolute inset-0 bg-black/35" /> : null}
+
+      {rect ? <DimHole rect={rect} dimOpacity={0.45} /> : null}
+
+      <div className="pointer-events-none absolute left-1/2 top-14 z-20 -translate-x-1/2 rounded-2xl bg-black/70 px-4 py-2 text-center text-white">
         <Typography className="text-white" type="body-sm">
           {t('recorder.regionHint')}
         </Typography>
       </div>
-
-      {rect ? (
-        <div
-          className="pointer-events-none absolute border-2 border-accent bg-accent/10"
-          style={{
-            left: rect.x,
-            top: rect.y,
-            width: rect.width,
-            height: rect.height,
-            boxShadow: '0 0 0 9999px rgba(0,0,0,0.45)',
-          }}
-        />
-      ) : null}
 
       <div
         className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-2"
