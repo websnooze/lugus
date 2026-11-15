@@ -1,9 +1,7 @@
-import { toast } from '@heroui/react'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 import type { OutputFormat, QualityPreset } from '../types'
-import i18n from '../i18n'
 
 export interface ConversionPreset {
   id: string
@@ -47,7 +45,6 @@ export const usePresetsStore = create<PresetsState>()(
           presets: [preset, ...get().presets],
           activePresetId: preset.id,
         })
-        toast.success(i18n.t('toasts.presetSaved'))
       },
 
       renamePreset: (id, name) => {
@@ -61,7 +58,6 @@ export const usePresetsStore = create<PresetsState>()(
               : preset,
           ),
         })
-        toast.success(i18n.t('toasts.presetRenamed'))
       },
 
       deletePreset: (id) => {
@@ -70,7 +66,6 @@ export const usePresetsStore = create<PresetsState>()(
           presets: presets.filter((preset) => preset.id !== id),
           activePresetId: activePresetId === id ? null : activePresetId,
         })
-        toast(i18n.t('toasts.presetDeleted'))
       },
 
       setActivePresetId: (id) => set({ activePresetId: id }),

@@ -1,9 +1,9 @@
 import { Check, FolderOpen, Play, Square } from '@gravity-ui/icons'
 import { Alert, Button, Label, ProgressBar, Spinner, Surface, Typography } from '@heroui/react'
-import { motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 
 import { useConverterStore } from '../store/converter'
+import { AnimatedNumber } from './AnimatedNumber'
 
 export function ActionBar() {
   const { t } = useTranslation()
@@ -18,14 +18,10 @@ export function ActionBar() {
   const reset = useConverterStore((s) => s.reset)
 
   const canConvert = Boolean(video) && !ffmpegError && status !== 'converting' && status !== 'probing'
+  const percent = Math.round(progress.percent)
 
   return (
-    <motion.div
-      className="app-no-drag space-y-4"
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
-    >
+    <div className="app-no-drag space-y-4">
       {ffmpegError ? (
         <Alert status="danger">
           <Alert.Indicator />
@@ -56,7 +52,9 @@ export function ActionBar() {
           >
             <div className="mb-2 flex items-center justify-between gap-3">
               <Label>{t('actions.converting')}</Label>
-              <ProgressBar.Output />
+              <span className="text-sm font-semibold tabular-nums text-foreground">
+                <AnimatedNumber value={percent} suffix="%" />
+              </span>
             </div>
             <ProgressBar.Track>
               <ProgressBar.Fill />
@@ -113,6 +111,6 @@ export function ActionBar() {
           )}
         </Button>
       ) : null}
-    </motion.div>
+    </div>
   )
 }

@@ -10,7 +10,6 @@ import {
   Surface,
   Typography,
 } from '@heroui/react'
-import { motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 
 import { useConverterStore } from '../store/converter'
@@ -32,13 +31,9 @@ export function OptionsPanel() {
   const disabled = status === 'converting' || status === 'probing' || !video
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-    >
+    <div>
       <Surface
-        className="app-no-drag space-y-6 rounded-[28px] border border-border bg-surface/70 p-6"
+        className="app-no-drag space-y-6 rounded-[28px] border border-border/80 bg-surface/55 p-6 shadow-[0_18px_50px_rgba(0,0,0,0.12)] backdrop-blur-xl"
         variant="default"
       >
         <div>
@@ -132,6 +127,6 @@ export function OptionsPanel() {
 
         <PresetsPanel />
       </Surface>
-    </motion.div>
+    </div>
   )
 }

@@ -8,7 +8,6 @@ import {
   Surface,
   TextField,
   Typography,
-  toast,
 } from '@heroui/react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -50,7 +49,6 @@ export function PresetsPanel() {
     setActivePresetId(preset.id)
     setQuality(preset.quality)
     await setFormat(preset.format)
-    toast.success(t('toasts.presetApplied'))
   }
 
   return (

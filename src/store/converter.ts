@@ -1,7 +1,5 @@
-import { toast } from '@heroui/react'
 import { create } from 'zustand'
 
-import i18n from '../i18n'
 import {
   cancelConversion,
   checkFfmpeg,
@@ -133,18 +131,13 @@ export const useConverterStore = create<ConverterState>((set, get) => ({
         outputPath: result,
         progress: { percent: 100, timeSecs: video.duration, speed: '1x' },
       })
-      toast.success(i18n.t('toasts.doneTitle'), {
-        description: i18n.t('toasts.doneDesc'),
-      })
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
       if (message.toLowerCase().includes('annul') || message.toLowerCase().includes('cancel')) {
         set({ status: 'ready', progress: initialProgress })
-        toast(i18n.t('toasts.cancelled'))
         return
       }
       set({ status: 'error', error: message })
-      toast.danger(i18n.t('toasts.failedTitle'), { description: message })
     }
   },
 
