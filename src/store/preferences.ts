@@ -4,45 +4,34 @@ import { persist } from 'zustand/middleware'
 import i18n, { type AppLanguage } from '../i18n'
 import { DEFAULT_RECORDING_HOTKEY } from '../lib/hotkey'
 
-export type ThemeMode = 'light' | 'dark' | 'system'
 export type AppView = 'welcome' | 'home' | 'recorder' | 'settings'
 
 interface PreferencesState {
   language: AppLanguage
-  themeMode: ThemeMode
   view: AppView
   launchAtLogin: boolean
   recordingHotkey: string
   hotkeyCaptureActive: boolean
   setLanguage: (language: AppLanguage) => void
-  setThemeMode: (themeMode: ThemeMode) => void
   setView: (view: AppView) => void
   setLaunchAtLogin: (value: boolean) => void
   setRecordingHotkey: (hotkey: string) => void
   setHotkeyCaptureActive: (value: boolean) => void
 }
 
-function resolveTheme(mode: ThemeMode): 'light' | 'dark' {
-  if (mode === 'system') {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-  }
-  return mode
-}
-
-export function applyTheme(mode: ThemeMode) {
-  const resolved = resolveTheme(mode)
+/** Dark only — ignore le thème système. */
+export function applyDarkTheme() {
   const root = document.documentElement
-  root.classList.remove('light', 'dark')
-  root.classList.add(resolved)
-  root.setAttribute('data-theme', resolved)
-  root.style.colorScheme = resolved
+  root.classList.remove('light')
+  root.classList.add('dark')
+  root.setAttribute('data-theme', 'dark')
+  root.style.colorScheme = 'dark'
 }
 
 export const usePreferencesStore = create<PreferencesState>()(
   persist(
     (set) => ({
       language: 'en',
-      themeMode: 'system',
       view: 'welcome',
       launchAtLogin: false,
       recordingHotkey: DEFAULT_RECORDING_HOTKEY,
@@ -51,11 +40,6 @@ export const usePreferencesStore = create<PreferencesState>()(
       setLanguage: (language) => {
         void i18n.changeLanguage(language)
         set({ language })
-      },
-
-      setThemeMode: (themeMode) => {
-        applyTheme(themeMode)
-        set({ themeMode })
       },
 
       setView: (view) => set({ view }),
@@ -70,14 +54,13 @@ export const usePreferencesStore = create<PreferencesState>()(
       name: 'vc-preferences',
       partialize: (state) => ({
         language: state.language,
-        themeMode: state.themeMode,
         launchAtLogin: state.launchAtLogin,
         recordingHotkey: state.recordingHotkey,
       }),
       onRehydrateStorage: () => (state) => {
+        applyDarkTheme()
         if (!state) return
         void i18n.changeLanguage(state.language)
-        applyTheme(state.themeMode)
         if (!state.recordingHotkey) {
           state.setRecordingHotkey(DEFAULT_RECORDING_HOTKEY)
         }

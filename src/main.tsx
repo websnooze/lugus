@@ -4,9 +4,9 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import './i18n'
 import './index.css'
-import { applyTheme, usePreferencesStore } from './store/preferences'
+import { applyDarkTheme } from './store/preferences'
 
-applyTheme(usePreferencesStore.getState().themeMode)
+applyDarkTheme()
 
 /** Pas de menu contextuel / inspect / raccourcis DevTools. */
 document.addEventListener('contextmenu', (event) => {
