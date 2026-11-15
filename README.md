@@ -4,7 +4,28 @@ App **locale** macOS (Apple Silicon) : convertisseur vidéo & image + enregistre
 
 Tauri 2 · React · HeroUI v3 · Rust / FFmpeg · VideoToolbox · sips (HEIC).
 
-## Prérequis
+## Installation
+
+1. Télécharge le DMG depuis les [Releases](https://github.com/websnooze/lugus/releases) (`Lugus_*_aarch64.dmg`, Apple Silicon)
+2. Ouvre le DMG et glisse **Lugus** dans Applications
+
+### Si macOS affiche « Lugus.app est endommagé… »
+
+Le build n’est pas encore signé / notarié : Gatekeeper bloque le fichier téléchargé (quarantaine), ce n’est pas une corruption. Dans le **Terminal** :
+
+```bash
+xattr -cr /Applications/Lugus.app
+open /Applications/Lugus.app
+```
+
+(Adapte le chemin si l’app n’est pas dans Applications.)
+
+Au premier lancement, autorise aussi **Enregistrement d’écran** dans  
+Réglages Système → Confidentialité et sécurité → Enregistrement d’écran.
+
+## Développement
+
+### Prérequis
 
 - macOS 13+ (Apple Silicon recommandé)
 - [Bun](https://bun.sh)
@@ -12,7 +33,7 @@ Tauri 2 · React · HeroUI v3 · Rust / FFmpeg · VideoToolbox · sips (HEIC).
 - [FFmpeg](https://ffmpeg.org) : `brew install ffmpeg`
 - Xcode Command Line Tools
 
-## Démarrage
+### Démarrage
 
 ```bash
 bun install
@@ -70,13 +91,8 @@ cp /tmp/vc-icon/AppIcon.icns src-tauri/icons/icon.icns
 
 - Écran d’accueil Convertisseur / Enregistreur
 - Fenêtre sans décorations natives (feux custom, drag titlebar, coins arrondis)
-- Tray, lancement au login, 8 langues, thème clair / sombre / système
+- Tray, lancement au login, 8 langues, thème sombre
 - Compteurs animés (NumberFlow) + barre de progression ; pas de toasts
-
-### Permissions macOS
-
-Autorise **Enregistrement d’écran** pour Lugus dans  
-Réglages Système → Confidentialité et sécurité → Enregistrement d’écran.
 
 ## Stack
 
