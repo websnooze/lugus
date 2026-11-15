@@ -26,6 +26,7 @@ export function PresetsPanel() {
 
   const format = useConverterStore((s) => s.format)
   const quality = useConverterStore((s) => s.quality)
+  const video = useConverterStore((s) => s.video)
   const setFormat = useConverterStore((s) => s.setFormat)
   const setQuality = useConverterStore((s) => s.setQuality)
   const status = useConverterStore((s) => s.status)
@@ -46,6 +47,13 @@ export function PresetsPanel() {
   }
 
   const applyPreset = async (preset: ConversionPreset) => {
+    const kind = video?.kind === 'image' ? 'image' : 'video'
+    const allowed =
+      kind === 'image'
+        ? ['jpg', 'png', 'webp', 'heic', 'avif', 'tiff', 'bmp', 'gif', 'jxl', 'jp2']
+        : ['mp4', 'hevc', 'mov', 'webm', 'mkv', 'gif', 'mp3']
+    if (!allowed.includes(preset.format)) return
+
     setActivePresetId(preset.id)
     setQuality(preset.quality)
     await setFormat(preset.format)

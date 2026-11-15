@@ -1,4 +1,4 @@
-import { ArrowUpFromLine, Filmstrip, Xmark } from "@gravity-ui/icons";
+import { ArrowUpFromLine, Filmstrip, Picture, Xmark } from "@gravity-ui/icons";
 import { Button, Chip, Spinner, Surface, Typography } from "@heroui/react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useEffect, useState } from "react";
@@ -16,6 +16,7 @@ export function DropZone() {
 	const loadVideo = useConverterStore((s) => s.loadVideo);
 	const reset = useConverterStore((s) => s.reset);
 	const busy = status === "probing" || status === "converting";
+	const isImage = video?.kind === "image";
 
 	useEffect(() => {
 		let unlisten: (() => void) | undefined;
@@ -63,7 +64,11 @@ export function DropZone() {
 				) : video ? (
 					<>
 						<div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-soft text-accent">
-							<Filmstrip width={28} height={28} />
+							{isImage ? (
+								<Picture width={28} height={28} />
+							) : (
+								<Filmstrip width={28} height={28} />
+							)}
 						</div>
 						<div className="space-y-2">
 							<Typography
@@ -74,11 +79,16 @@ export function DropZone() {
 							</Typography>
 							<div className="flex flex-wrap items-center justify-center gap-2">
 								<Chip color="accent" size="sm" variant="soft">
-									{video.width}×{video.height}
+									{isImage ? t("dropzone.image") : t("dropzone.video")}
 								</Chip>
 								<Chip size="sm" variant="soft">
-									{formatDuration(video.duration)}
+									{video.width}×{video.height}
 								</Chip>
+								{!isImage ? (
+									<Chip size="sm" variant="soft">
+										{formatDuration(video.duration)}
+									</Chip>
+								) : null}
 								<Chip size="sm" variant="soft">
 									{formatBytes(video.sizeBytes)}
 								</Chip>

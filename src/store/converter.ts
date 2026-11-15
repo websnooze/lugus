@@ -4,8 +4,8 @@ import {
   cancelConversion,
   checkFfmpeg,
   convertVideo,
+  pickMediaFile,
   pickOutputPath,
-  pickVideoFile,
   probeVideo,
   revealInFinder,
   suggestOutputPath,
@@ -17,6 +17,7 @@ import type {
   QualityPreset,
   VideoInfo,
 } from '../types'
+import { defaultFormatForKind, formatsForKind, isImageFormat, isVideoFormat } from '../types'
 
 interface ConverterState {
   ffmpegVersion: string | null
@@ -45,6 +46,14 @@ const initialProgress: ConversionProgress = {
   percent: 0,
   timeSecs: 0,
   speed: null,
+}
+
+function coerceFormat(kind: VideoInfo['kind'], format: OutputFormat): OutputFormat {
+  const allowed = formatsForKind(kind).map((o) => o.id)
+  if (allowed.includes(format)) return format
+  // gif est dans les deux listes
+  if (format === 'gif') return 'gif'
+  return defaultFormatForKind(kind)
 }
 
 export const useConverterStore = create<ConverterState>((set, get) => ({
@@ -84,8 +93,11 @@ export const useConverterStore = create<ConverterState>((set, get) => ({
     set({ status: 'probing', error: null, progress: initialProgress, outputPath: null })
     try {
       const video = await probeVideo(path)
-      const outputPath = await suggestOutputPath(path, get().format)
-      set({ video, outputPath, status: 'ready' })
+      const kind = video.kind === 'image' ? 'image' : 'video'
+      const media: VideoInfo = { ...video, kind }
+      const format = coerceFormat(kind, get().format)
+      const outputPath = await suggestOutputPath(path, format)
+      set({ video: media, format, outputPath, status: 'ready' })
     } catch (error) {
       set({
         video: null,
@@ -96,7 +108,7 @@ export const useConverterStore = create<ConverterState>((set, get) => ({
   },
 
   chooseVideo: async () => {
-    const path = await pickVideoFile()
+    const path = await pickMediaFile()
     if (!path) return
     await get().loadVideo(path)
   },
@@ -112,6 +124,15 @@ export const useConverterStore = create<ConverterState>((set, get) => ({
   startConversion: async () => {
     const { video, format, quality, outputPath, ffmpegError } = get()
     if (!video || ffmpegError) return
+
+    // Garde-fou : format incompatible avec le type de média
+    if (video.kind === 'image' && isVideoFormat(format) && format !== 'gif') {
+      set({ status: 'error', error: 'Choisis un format image pour ce fichier.' })
+      return
+    }
+    if (video.kind === 'video' && isImageFormat(format) && format !== 'gif') {
+      // Extraire une image d’une vidéo (1ʳᵉ frame) est supporté côté FFmpeg.
+    }
 
     set({
       status: 'converting',
@@ -129,7 +150,11 @@ export const useConverterStore = create<ConverterState>((set, get) => ({
       set({
         status: 'done',
         outputPath: result,
-        progress: { percent: 100, timeSecs: video.duration, speed: '1x' },
+        progress: {
+          percent: 100,
+          timeSecs: video.kind === 'image' ? 1 : video.duration,
+          speed: '1x',
+        },
       })
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)

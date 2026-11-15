@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useConverterStore } from '../store/converter'
 import { usePresetsStore } from '../store/presets'
-import { FORMAT_OPTIONS, type OutputFormat, type QualityPreset } from '../types'
+import { formatsForKind, type OutputFormat, type QualityPreset } from '../types'
 import { PresetsPanel } from './PresetsPanel'
 
 export function OptionsPanel() {
@@ -29,6 +29,8 @@ export function OptionsPanel() {
   const video = useConverterStore((s) => s.video)
   const setActivePresetId = usePresetsStore((s) => s.setActivePresetId)
   const disabled = status === 'converting' || status === 'probing' || !video
+  const kind = video?.kind === 'image' ? 'image' : 'video'
+  const formatOptions = formatsForKind(kind)
 
   return (
     <div>
@@ -63,7 +65,7 @@ export function OptionsPanel() {
           </Select.Trigger>
           <Select.Popover>
             <ListBox>
-              {FORMAT_OPTIONS.map((option) => (
+              {formatOptions.map((option) => (
                 <ListBox.Item id={option.id} key={option.id} textValue={option.id.toUpperCase()}>
                   <div className="flex flex-col">
                     <span>{option.id.toUpperCase()}</span>
@@ -88,7 +90,9 @@ export function OptionsPanel() {
           }}
         >
           <Label>{t('options.quality')}</Label>
-          <Description>{t('options.qualityHint')}</Description>
+          <Description>
+            {kind === 'image' ? t('options.qualityHintImage') : t('options.qualityHint')}
+          </Description>
           {(['high', 'balanced', 'small'] as const).map((id) => (
             <Radio key={id} value={id}>
               <Radio.Content>

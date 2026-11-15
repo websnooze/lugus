@@ -10,8 +10,8 @@ use serde::Deserialize;
 use tauri::{AppHandle, Emitter};
 
 use crate::ffmpeg::{
-    self, build_ffmpeg_args, default_output_path, parse_progress_line, ConversionProgress,
-    FfmpegError, VideoInfo,
+    self, build_ffmpeg_args_for, convert_image_with_sips, default_output_path, parse_progress_line,
+    prepare_sips_input, uses_sips_encode, ConversionProgress, FfmpegError, VideoInfo,
 };
 
 static ACTIVE_PROCESS: Lazy<Mutex<Option<Child>>> = Lazy::new(|| Mutex::new(None));
@@ -68,22 +68,75 @@ pub async fn convert_video(
     let output = request
         .output_path
         .unwrap_or_else(|| default_output_path(&request.input_path, &request.format));
-    let duration = info.duration;
-    let ffmpeg_bin = ffmpeg::find_binary("ffmpeg")?;
-    let args = build_ffmpeg_args(
-        &request.input_path,
-        &output,
-        &request.format,
-        &request.quality,
-    )?;
+    let duration = if info.kind == "image" {
+        1.0
+    } else {
+        info.duration
+    };
+    let media_kind = info.kind.clone();
+    let format = request.format.clone();
+    let quality = request.quality.clone();
+    let input = request.input_path.clone();
 
     let result = tauri::async_runtime::spawn_blocking(move || {
+        // HEIC / HEIF / JP2 : ImageIO via sips (FFmpeg n’a pas le muxer heif ici).
+        if uses_sips_encode(&format) {
+            return run_sips_conversion(app, &input, &output, &format, &quality, duration);
+        }
+
+        let ffmpeg_bin = ffmpeg::find_binary("ffmpeg")?;
+        let args = build_ffmpeg_args_for(&input, &output, &format, &quality, &media_kind)?;
         run_conversion(app, ffmpeg_bin, args, output, duration)
     })
     .await
     .map_err(|e| FfmpegError::ConversionFailed(e.to_string()))?;
 
     result
+}
+
+fn run_sips_conversion(
+    app: AppHandle,
+    input: &str,
+    output: &str,
+    format: &str,
+    quality: &str,
+    duration: f64,
+) -> Result<String, FfmpegError> {
+    let _ = app.emit(
+        "conversion-progress",
+        &ConversionProgress {
+            percent: 15.0,
+            time_secs: 0.0,
+            speed: Some("sips".into()),
+        },
+    );
+
+    let (sips_input, cleanup) = prepare_sips_input(input)?;
+    let input_str = sips_input.to_string_lossy().to_string();
+
+    let result = convert_image_with_sips(&input_str, output, format, quality);
+
+    if cleanup {
+        let _ = std::fs::remove_file(&sips_input);
+    }
+
+    result?;
+
+    if CANCELLED.load(Ordering::SeqCst) {
+        let _ = std::fs::remove_file(output);
+        return Err(FfmpegError::Cancelled);
+    }
+
+    let _ = app.emit(
+        "conversion-progress",
+        &ConversionProgress {
+            percent: 100.0,
+            time_secs: duration,
+            speed: Some("1x".into()),
+        },
+    );
+
+    Ok(output.to_string())
 }
 
 fn run_conversion(

@@ -37,10 +37,46 @@ export async function cancelConversion(): Promise<void> {
 }
 
 export async function pickVideoFile(): Promise<string | null> {
+  return pickMediaFile()
+}
+
+export async function pickMediaFile(): Promise<string | null> {
   const selected = await open({
     multiple: false,
-    title: 'Choisir une vidéo',
+    title: 'Choisir un fichier',
     filters: [
+      {
+        name: 'Média',
+        extensions: [
+          'mp4',
+          'mov',
+          'mkv',
+          'webm',
+          'avi',
+          'm4v',
+          'wmv',
+          'flv',
+          'mpeg',
+          'mpg',
+          'ts',
+          'mts',
+          'jpg',
+          'jpeg',
+          'png',
+          'webp',
+          'heic',
+          'heif',
+          'avif',
+          'tif',
+          'tiff',
+          'bmp',
+          'gif',
+          'jxl',
+          'jp2',
+          'psd',
+          'tga',
+        ],
+      },
       {
         name: 'Vidéo',
         extensions: [
@@ -58,6 +94,26 @@ export async function pickVideoFile(): Promise<string | null> {
           'mts',
         ],
       },
+      {
+        name: 'Image',
+        extensions: [
+          'jpg',
+          'jpeg',
+          'png',
+          'webp',
+          'heic',
+          'heif',
+          'avif',
+          'tif',
+          'tiff',
+          'bmp',
+          'gif',
+          'jxl',
+          'jp2',
+          'psd',
+          'tga',
+        ],
+      },
     ],
   })
 
@@ -68,7 +124,8 @@ export async function pickOutputPath(
   defaultPath: string,
   format: OutputFormat,
 ): Promise<string | null> {
-  const extension = format === 'hevc' ? 'mp4' : format
+  const extension =
+    format === 'hevc' ? 'mp4' : format === 'jpeg' ? 'jpg' : format === 'heif' ? 'heic' : format
   const selected = await save({
     title: 'Enregistrer sous',
     defaultPath,
