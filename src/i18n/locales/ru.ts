@@ -104,7 +104,7 @@ const ru: TranslationSchema = {
     general: 'Общие',
     generalDesc: 'Запуск и поведение системы',
     launchAtLogin: 'Запускать при входе',
-    launchAtLoginDesc: 'Автоматически открывать Lugus при входе в систему',
+    launchAtLoginDesc: 'Запускать Lugus в фоне (только меню) при входе в систему',
     launchAtLoginError: 'Не удалось обновить автозапуск',
     shortcuts: 'Горячие клавиши',
     shortcutsDesc: 'Глобальные сочетания работают даже в фоне',

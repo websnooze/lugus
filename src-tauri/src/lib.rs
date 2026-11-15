@@ -5,7 +5,7 @@ mod recorder;
 mod recorder_panel;
 mod sources;
 
-use tauri::WindowEvent;
+use tauri::{Manager, WindowEvent};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -29,6 +29,16 @@ pub fn run() {
                         .build(),
                 )?;
             }
+
+            // Agent / tray : jamais d’icône dans le Dock ; démarrage sans fenêtre.
+            #[cfg(target_os = "macos")]
+            {
+                let _ = app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+            }
+            if let Some(main) = app.get_webview_window("main") {
+                let _ = main.hide();
+            }
+
             Ok(())
         })
         .on_window_event(|window, event| {

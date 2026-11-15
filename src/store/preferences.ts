@@ -33,7 +33,7 @@ export const usePreferencesStore = create<PreferencesState>()(
     (set) => ({
       language: 'en',
       view: 'welcome',
-      launchAtLogin: false,
+      launchAtLogin: true,
       recordingHotkey: DEFAULT_RECORDING_HOTKEY,
       hotkeyCaptureActive: false,
 

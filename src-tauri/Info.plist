@@ -4,6 +4,9 @@
 <dict>
 	<key>CFBundleIconName</key>
 	<string>AppIcon</string>
+	<!-- App agent : pas d’icône Dock, vie via le menu tray. -->
+	<key>LSUIElement</key>
+	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2026 websnooze. Tous droits réservés.</string>
 </dict>

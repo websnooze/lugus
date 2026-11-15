@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Lugus",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "identifier": "com.websnooze.lugus",
   "build": {
     "frontendDist": "../dist",
@@ -24,7 +24,8 @@
         "decorations": false,
         "shadow": true,
         "hiddenTitle": true,
-        "devtools": false
+        "devtools": false,
+        "visible": false
       }
     ],
     "security": {
@@ -34,7 +35,10 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["app", "dmg"],
+    "targets": [
+      "app",
+      "dmg"
+    ],
     "macOS": {
       "minimumSystemVersion": "13.0",
       "files": {

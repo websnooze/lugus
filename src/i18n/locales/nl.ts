@@ -104,7 +104,7 @@ const nl: TranslationSchema = {
     general: 'Algemeen',
     generalDesc: 'Opstarten en systeemgedrag',
     launchAtLogin: 'Starten bij inloggen',
-    launchAtLoginDesc: 'Start Lugus automatisch bij het inloggen',
+    launchAtLoginDesc: 'Start Lugus op de achtergrond (alleen menubalk) bij het inloggen',
     launchAtLoginError: 'Automatisch starten kon niet worden bijgewerkt',
     shortcuts: 'Sneltoetsen',
     shortcutsDesc: 'Globale sneltoetsen werken ook op de achtergrond',

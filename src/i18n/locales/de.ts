@@ -104,7 +104,7 @@ const de: TranslationSchema = {
     general: 'Allgemein',
     generalDesc: 'Start und Systemverhalten',
     launchAtLogin: 'Beim Login starten',
-    launchAtLoginDesc: 'Lugus beim Anmelden automatisch starten',
+    launchAtLoginDesc: 'Lugus beim Anmelden im Hintergrund starten (nur Menüleiste)',
     launchAtLoginError: 'Autostart konnte nicht aktualisiert werden',
     shortcuts: 'Tastenkürzel',
     shortcutsDesc: 'Globale Tastenkürzel funktionieren auch im Hintergrund',

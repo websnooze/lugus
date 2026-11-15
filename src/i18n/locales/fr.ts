@@ -104,7 +104,7 @@ const fr: TranslationSchema = {
     general: 'Général',
     generalDesc: 'Démarrage et comportement système',
     launchAtLogin: 'Lancer au démarrage',
-    launchAtLoginDesc: 'Ouvre Lugus automatiquement à la connexion',
+    launchAtLoginDesc: 'Lance Lugus en arrière-plan (tray uniquement) à la connexion',
     launchAtLoginError: 'Impossible de mettre à jour le lancement automatique',
     shortcuts: 'Raccourcis',
     shortcutsDesc: 'Les raccourcis globaux fonctionnent même en arrière-plan',

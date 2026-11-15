@@ -49,7 +49,7 @@ mod macos {
             }
         };
 
-        // Accessory : l’app ne s’active pas au contact trackpad sur l’overlay.
+        // Reste Accessory (app agent / pas de Dock) pendant l’overlay.
         let _ = app.set_activation_policy(tauri::ActivationPolicy::Accessory);
 
         panel.set_level(PanelLevel::PopUpMenu.value());
@@ -78,7 +78,8 @@ mod macos {
 
     fn disable(app: &AppHandle) -> Result<(), String> {
         PANEL_ACTIVE.store(false, Ordering::SeqCst);
-        let _ = app.set_activation_policy(tauri::ActivationPolicy::Regular);
+        // Ne pas repasser en Regular : ça ferait réapparaître l’icône Dock.
+        let _ = app.set_activation_policy(tauri::ActivationPolicy::Accessory);
 
         let Ok(panel) = app.get_webview_panel("main") else {
             return Ok(());

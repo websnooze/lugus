@@ -1,6 +1,6 @@
 [package]
 name = "video-converter"
-version = "0.1.0"
+version = "0.1.1"
 description = "Lugus — convertisseur média local pour macOS"
 authors = ["websnooze"]
 edition = "2021"

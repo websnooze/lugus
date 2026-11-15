@@ -102,7 +102,7 @@ const en = {
     general: 'General',
     generalDesc: 'Startup and system behavior',
     launchAtLogin: 'Launch at login',
-    launchAtLoginDesc: 'Start Lugus automatically when you log in',
+    launchAtLoginDesc: 'Start Lugus in the background (tray only) when you log in',
     launchAtLoginError: 'Could not update launch at login',
     shortcuts: 'Shortcuts',
     shortcutsDesc: 'Global hotkeys work even when the app is in the background',

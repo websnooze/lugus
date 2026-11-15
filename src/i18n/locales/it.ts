@@ -104,7 +104,7 @@ const it: TranslationSchema = {
     general: 'Generale',
     generalDesc: 'Avvio e comportamento di sistema',
     launchAtLogin: 'Avvia al login',
-    launchAtLoginDesc: 'Apri Lugus automaticamente all’accesso',
+    launchAtLoginDesc: 'Avvia Lugus in background (solo menu) all’accesso',
     launchAtLoginError: 'Impossibile aggiornare l’avvio automatico',
     shortcuts: 'Scorciatoie',
     shortcutsDesc: 'Le scorciatoie globali funzionano anche in background',

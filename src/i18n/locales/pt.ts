@@ -104,7 +104,7 @@ const pt: TranslationSchema = {
     general: 'Geral',
     generalDesc: 'Arranque e comportamento do sistema',
     launchAtLogin: 'Abrir no início de sessão',
-    launchAtLoginDesc: 'Inicia o Lugus automaticamente ao iniciar sessão',
+    launchAtLoginDesc: 'Inicia o Lugus em segundo plano (só menu) ao iniciar sessão',
     launchAtLoginError: 'Não foi possível atualizar o arranque automático',
     shortcuts: 'Atalhos',
     shortcutsDesc: 'Os atalhos globais funcionam mesmo em segundo plano',

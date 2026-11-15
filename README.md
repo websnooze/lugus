@@ -91,7 +91,7 @@ cp /tmp/vc-icon/AppIcon.icns src-tauri/icons/icon.icns
 
 - Écran d’accueil Convertisseur / Enregistreur
 - Fenêtre sans décorations natives (feux custom, drag titlebar, coins arrondis)
-- Tray, lancement au login, 8 langues, thème sombre
+- App agent (pas d’icône Dock) : démarrage en arrière-plan via le tray, lancement au login, 8 langues, thème sombre
 - Compteurs animés (NumberFlow) + barre de progression ; pas de toasts
 
 ## Stack

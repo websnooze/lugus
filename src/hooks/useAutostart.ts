@@ -12,13 +12,21 @@ export function useAutostartSync(enabled: boolean) {
     if (!enabled) return
 
     let cancelled = false
-    void isEnabled()
-      .then((value) => {
-        if (!cancelled && value !== launchAtLogin) {
-          setLaunchAtLogin(value)
+    void (async () => {
+      try {
+        const osEnabled = await isEnabled()
+        // Préférence app = true par défaut : activer le LaunchAgent si besoin.
+        if (launchAtLogin && !osEnabled) {
+          await enable()
+          return
         }
-      })
-      .catch(() => undefined)
+        if (!cancelled && osEnabled !== launchAtLogin) {
+          setLaunchAtLogin(osEnabled)
+        }
+      } catch {
+        // ignore
+      }
+    })()
 
     return () => {
       cancelled = true
