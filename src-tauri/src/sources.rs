@@ -135,7 +135,12 @@ mod macos {
             let id = dict_number(&dict, "kCGWindowNumber").unwrap_or(0) as u32;
             let owner = dict_string(&dict, "kCGWindowOwnerName").unwrap_or_default();
             let title = dict_string(&dict, "kCGWindowName").unwrap_or_default();
-            if owner.is_empty() || owner == "Video Converter" || owner == "Window Server" {
+            if owner.is_empty()
+                || owner == "Lugus"
+                || owner == "Converter"
+                || owner == "Video Converter"
+                || owner == "Window Server"
+            {
                 continue;
             }
 

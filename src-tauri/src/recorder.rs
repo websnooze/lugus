@@ -78,7 +78,7 @@ impl Serialize for RecorderError {
 fn recordings_dir() -> Result<std::path::PathBuf, RecorderError> {
     let home = dirs::home_dir()
         .ok_or_else(|| RecorderError::Message("Home directory introuvable".into()))?;
-    let dir = home.join("Movies").join("Video Converter");
+    let dir = home.join("Movies").join("Lugus");
     std::fs::create_dir_all(&dir)?;
     Ok(dir)
 }
@@ -96,7 +96,7 @@ fn screenshots_dir() -> Result<std::path::PathBuf, RecorderError> {
         })
     });
     let base = base.ok_or_else(|| RecorderError::Message("Dossier Images introuvable".into()))?;
-    let dir = base.join("Video Converter");
+    let dir = base.join("Lugus");
     std::fs::create_dir_all(&dir)?;
     Ok(dir)
 }
@@ -529,9 +529,10 @@ pub async fn take_screenshot(
 fn restore_main_after_picker(app: &AppHandle) {
     if let Some(main) = app.get_webview_window("main") {
         let _ = main.show();
-        let _ = main.set_focus();
-        let _ = crate::macos_overlay::apply_overlay_chrome(&main, true);
+        // Pas de set_focus : conserve le comportement NSPanel non-activant.
     }
+    // Repose le panel fullscreen / all-spaces après hide (screenshot / picker).
+    let _ = crate::recorder_panel::set_recorder_panel_mode(app.clone(), true);
 }
 
 #[tauri::command]

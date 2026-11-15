@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Video Converter",
+  "productName": "Lugus",
   "version": "0.1.0",
-  "identifier": "com.websnooze.videoconverter",
+  "identifier": "com.websnooze.lugus",
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:5173",
@@ -13,7 +13,7 @@
     "macOSPrivateApi": true,
     "windows": [
       {
-        "title": "Video Converter",
+        "title": "Lugus",
         "width": 980,
         "height": 720,
         "minWidth": 840,
@@ -37,6 +37,9 @@
     "targets": ["app", "dmg"],
     "macOS": {
       "minimumSystemVersion": "13.0"
+    },
+    "resources": {
+      "Assets.car": "Assets.car"
     },
     "icon": [
       "icons/32x32.png",
