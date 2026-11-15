@@ -82,4 +82,86 @@ export async function revealInFinder(path: string): Promise<void> {
   await revealItemInDir(path)
 }
 
+export interface DisplayInfo {
+  id: number
+  name: string
+  width: number
+  height: number
+  x: number
+  y: number
+  scale: number
+  isMain: boolean
+  ffmpegIndex: number
+}
+
+export interface WindowInfo {
+  id: number
+  title: string
+  owner: string
+  width: number
+  height: number
+  x: number
+  y: number
+}
+
+export interface CaptureRegion {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+export async function listDisplays(): Promise<DisplayInfo[]> {
+  return invoke<DisplayInfo[]>('list_displays')
+}
+
+export async function listWindows(): Promise<WindowInfo[]> {
+  return invoke<WindowInfo[]>('list_windows')
+}
+
+export async function startRecording(request: {
+  mode: 'display' | 'window' | 'region'
+  fps: number
+  displayId?: number
+  windowId?: number
+  region?: CaptureRegion
+  showCursor: boolean
+}): Promise<{ outputPath: string }> {
+  return invoke('start_recording', { request })
+}
+
+export async function stopRecording(): Promise<string> {
+  return invoke<string>('stop_recording')
+}
+
+export async function isRecording(): Promise<boolean> {
+  return invoke<boolean>('is_recording')
+}
+
+export async function takeScreenshot(request: {
+  mode: 'display' | 'window' | 'region'
+  displayId?: number
+  windowId?: number
+  region?: CaptureRegion
+  showCursor: boolean
+}): Promise<{ outputPath: string }> {
+  return invoke('take_screenshot', { request })
+}
+
+export async function openRegionPicker(displayId?: number): Promise<void> {
+  await invoke('open_region_picker', { displayId: displayId ?? null })
+}
+
+export async function closeRegionPicker(): Promise<void> {
+  await invoke('close_region_picker')
+}
+
+export async function confirmRegion(
+  region: CaptureRegion,
+  displayId: number,
+  scale: number,
+): Promise<void> {
+  await invoke('confirm_region', { region, displayId, scale })
+}
+
 export type { ConversionProgress }

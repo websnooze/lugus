@@ -1,36 +1,59 @@
-import { ArrowLeft, Globe, Moon, Sun } from '@gravity-ui/icons'
+import { ArrowLeft, Globe, Keyboard, Moon, Power, Sun } from '@gravity-ui/icons'
 import {
+  Alert,
   Button,
+  Description,
   Label,
   ListBox,
   Radio,
   RadioGroup,
   Select,
   Surface,
+  Switch,
   Typography,
 } from '@heroui/react'
-import { motion } from 'motion/react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SUPPORTED_LANGUAGES, type AppLanguage } from '../i18n'
+import { applyLaunchAtLogin } from '../hooks/useAutostart'
 import { usePreferencesStore, type ThemeMode } from '../store/preferences'
+import { HotkeyRecorder } from './HotkeyRecorder'
 
 export function SettingsScreen() {
   const { t } = useTranslation()
   const language = usePreferencesStore((s) => s.language)
   const themeMode = usePreferencesStore((s) => s.themeMode)
+  const launchAtLogin = usePreferencesStore((s) => s.launchAtLogin)
+  const recordingHotkey = usePreferencesStore((s) => s.recordingHotkey)
   const setLanguage = usePreferencesStore((s) => s.setLanguage)
   const setThemeMode = usePreferencesStore((s) => s.setThemeMode)
+  const setLaunchAtLogin = usePreferencesStore((s) => s.setLaunchAtLogin)
+  const setRecordingHotkey = usePreferencesStore((s) => s.setRecordingHotkey)
   const setView = usePreferencesStore((s) => s.setView)
+  const [autostartBusy, setAutostartBusy] = useState(false)
+  const [autostartError, setAutostartError] = useState<string | null>(null)
+
+  const handleLaunchAtLogin = async (next: boolean) => {
+    setAutostartBusy(true)
+    setAutostartError(null)
+    const previous = launchAtLogin
+    setLaunchAtLogin(next)
+    try {
+      await applyLaunchAtLogin(next)
+    } catch (error) {
+      setLaunchAtLogin(previous)
+      setAutostartError(
+        error instanceof Error ? error.message : String(error),
+      )
+    } finally {
+      setAutostartBusy(false)
+    }
+  }
 
   return (
-    <motion.div
-      className="space-y-5 px-6 py-6"
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <Button className="app-no-drag" variant="ghost" onPress={() => setView('home')}>
+    <div className="space-y-5 px-6 py-6">
+      <Button className="app-no-drag" variant="ghost" onPress={() => setView('welcome')}>
         <ArrowLeft />
         {t('settings.back')}
       </Button>
@@ -127,6 +150,66 @@ export function SettingsScreen() {
           </Select.Popover>
         </Select>
       </Surface>
-    </motion.div>
+
+      <Surface className="app-no-drag space-y-6 rounded-[28px] border border-border bg-surface/70 p-6">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent-soft text-accent">
+            <Power />
+          </div>
+          <div>
+            <Typography className="font-semibold" type="h4">
+              {t('settings.general')}
+            </Typography>
+            <Typography color="muted" type="body-sm">
+              {t('settings.generalDesc')}
+            </Typography>
+          </div>
+        </div>
+
+        <Switch
+          isDisabled={autostartBusy}
+          isSelected={launchAtLogin}
+          onChange={(value) => {
+            void handleLaunchAtLogin(value)
+          }}
+        >
+          <Switch.Content>
+            <Switch.Control>
+              <Switch.Thumb />
+            </Switch.Control>
+            {t('settings.launchAtLogin')}
+          </Switch.Content>
+          <Description>{t('settings.launchAtLoginDesc')}</Description>
+        </Switch>
+
+        {autostartError ? (
+          <Alert status="danger">
+            <Alert.Indicator />
+            <Alert.Content>
+              <Alert.Title>{t('settings.launchAtLoginError')}</Alert.Title>
+              <Alert.Description>{autostartError}</Alert.Description>
+            </Alert.Content>
+          </Alert>
+        ) : null}
+      </Surface>
+
+      <Surface className="app-no-drag space-y-6 rounded-[28px] border border-border bg-surface/70 p-6">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent-soft text-accent">
+            <Keyboard />
+          </div>
+          <div>
+            <Typography className="font-semibold" type="h4">
+              {t('settings.shortcuts')}
+            </Typography>
+            <Typography color="muted" type="body-sm">
+              {t('settings.shortcutsDesc')}
+            </Typography>
+          </div>
+        </div>
+
+        <HotkeyRecorder value={recordingHotkey} onChange={setRecordingHotkey} />
+      </Surface>
+    </div>
   )
 }
