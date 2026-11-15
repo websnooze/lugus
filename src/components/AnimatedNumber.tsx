@@ -1,9 +1,9 @@
-import NumberFlow from '@number-flow/react'
+import NumberFlow, { type Format } from '@number-flow/react'
 
 type AnimatedNumberProps = {
   value: number
   className?: string
-  format?: Intl.NumberFormatOptions
+  format?: Format
   suffix?: string
   prefix?: string
 }

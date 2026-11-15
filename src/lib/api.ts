@@ -124,8 +124,7 @@ export async function pickOutputPath(
   defaultPath: string,
   format: OutputFormat,
 ): Promise<string | null> {
-  const extension =
-    format === 'hevc' ? 'mp4' : format === 'jpeg' ? 'jpg' : format === 'heif' ? 'heic' : format
+  const extension = format === 'hevc' ? 'mp4' : format
   const selected = await save({
     title: 'Enregistrer sous',
     defaultPath,
